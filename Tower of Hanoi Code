@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_DISKS 64 // Maximum number of disks
+
+// Stack structure to hold disks
+typedef struct {
+    int top;
+    int disks[MAX_DISKS];
+} Stack;
+
+// Function to initialize the stack
+void initStack(Stack *s) {
+    s->top = -1;
+}
+
+// Function to push a disk onto the stack
+void push(Stack *s, int disk) {
+    if (s->top < MAX_DISKS - 1) {
+        s->disks[++(s->top)] = disk;
+    } else {
+        printf("Stack overflow\n");
+    }
+}
+
+// Function to pop a disk from the stack
+int pop(Stack *s) {
+    if (s->top >= 0) {
+        return s->disks[(s->top)--];
+    } else {
+        printf("Stack underflow\n");
+        return -1;
+    }
+}
+
+// Function to print the move
+void moveDisk(int from, int to, int disk) {
+    printf("Move disk %d from peg %d to peg %d\n", disk, from, to);
+}
+
+// Recursive function to solve Tower of Hanoi
+void towerOfHanoi(int n, Stack *src, Stack *aux, Stack *dest, int from, int to, int auxPeg) {
+    if (n == 1) {
+        moveDisk(from, to, pop(src));
+        return;
+    }
+    towerOfHanoi(n - 1, src, dest, aux, from, auxPeg, to);
+    moveDisk(from, to, pop(src));
+    towerOfHanoi(n - 1, aux, src, dest, auxPeg, to, from);
+}
+
+int main() {
+    int n; // Number of disks
+
+    printf("Enter the number of disks: ");
+    scanf("%d", &n);
+
+    Stack src, aux, dest;
+
+    // Initialize the stacks
+    initStack(&src);
+    initStack(&aux);
+    initStack(&dest);
+
+    // Push disks onto the source stack
+    for (int i = n; i >= 1; i--) {
+        push(&src, i);
+    }
+
+    // Solve the Tower of Hanoi
+    towerOfHanoi(n, &src, &aux, &dest, 1, 3, 2);
+
+    return 0;
+}
